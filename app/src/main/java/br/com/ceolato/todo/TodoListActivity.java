@@ -19,6 +19,8 @@ public class TodoListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_todo_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        
+        mostrarTarefas();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -30,6 +32,21 @@ public class TodoListActivity extends AppCompatActivity {
         });
     }
 
+    private void mostrarTarefas(){
+        ListView listaToDo = (ListView) findViewById(R.id.listViewToDo);
+        listaToDo.setAdapter(new TodoAdapter(this));
+        listaToDo.setOnItemClickListener(new ListaToDOItemClickListener());
+    }
+
+    private class ListaToDOItemClickListener implements OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent i = new Intent(getApplicationContext(), TodoActivity.class);
+            i.putExtra("tarefa", id);
+            startActivity(i);
+        }
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
