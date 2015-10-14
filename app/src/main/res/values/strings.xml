@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Todo</string>
+    <string name="action_settings">Settings</string>
+
+
+    <!-- New To-Do  -->
+    <string name="title">Título</string>
+    <string name="description">Descrição</string>
+    <string name="date">Data</string>
+    <string name="hour">Hora</string>
+    <string name="save">Gravar</string>
+    <string name="cancel">Cancelar</string>
+</resources>

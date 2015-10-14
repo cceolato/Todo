@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/textViewDate"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textSize="36sp"
+        android:paddingLeft="5sp"
+        android:paddingTop="5sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/textViewTitle"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textViewDate"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:padding="5sp"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textViewTime"
+        android:layout_below="@+id/textViewDate"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/textViewDate"
+        android:layout_alignEnd="@+id/textViewDate"
+        android:textSize="24sp"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewDescription"
+        android:layout_below="@+id/textViewTitle"
+        android:layout_toRightOf="@+id/textViewDate"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/textViewTime"
+        android:padding="5sp" />
+
+</RelativeLayout>
