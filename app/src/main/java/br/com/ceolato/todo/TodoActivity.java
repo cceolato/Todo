@@ -43,6 +43,7 @@ public class TodoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_todo);
         cal = Calendar.getInstance();
         this.inicializa();
+        this.carregaTarefa();
         this.setListeners();
     }
 
@@ -56,6 +57,18 @@ public class TodoActivity extends AppCompatActivity {
         buttonSave = (Button) findViewById(R.id.buttonSave);
     }
 
+    private void carregaTarefa(){
+        long id = this.getIntent().getLongExtra("tarefa", -1);
+        TarefaDAO dao = new TarefaDAO(this);
+        if (id > -1) {
+            Tarefa tarefa = dao.consultar(id);
+            editTextTitle.setText(tarefa.getTitle());
+            editTextDescription.setText(tarefa.getDescription());
+            editTextDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime()));
+            editTextTime.setText(new SimpleDateFormat("HH:mm").format(cal.getTime()));
+        }
+    }
+    
     private void setListeners(){
         buttonDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,20 +94,23 @@ public class TodoActivity extends AppCompatActivity {
     }
 
     public void saveToDo(View view){
-        cal.set(year, month, day, hour, minute);
-        final Tarefa tarefa = new Tarefa();
-        tarefa.setTitle(editTextTitle.getText().toString());
-        tarefa.setDescription(editTextDescription.getText().toString());
-        tarefa.setData(cal.getTime());
+        if (validaCampos()) {
+            cal.set(year, month, day, hour, minute);
+            final Tarefa tarefa = new Tarefa();
+            tarefa.setTitle(editTextTitle.getText().toString());
+            tarefa.setDescription(editTextDescription.getText().toString());
+            tarefa.setData(cal.getTime());
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                TarefaDAO dao = new TarefaDAO(TodoActivity.this);
-                tarefa.setId(dao.inserir(tarefa));
-                dao.close();
-            }
-        }).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    TarefaDAO dao = new TarefaDAO(TodoActivity.this);
+                    tarefa.setId(dao.inserir(tarefa));
+                    dao.close();
+                    Snackbar.make(findViewById(R.id.snackbarPosition), getResources().getString(R.string.savedTodo), Snackbar.LENGTH_LONG);
+                }
+            }).start();
+        }
     }
 
     @Override
@@ -127,4 +143,21 @@ public class TodoActivity extends AppCompatActivity {
         }
     };
 
+    private boolean validaCampos(){
+        if (editTextTitle.getText().toString().equals("")){
+            Snackbar.make(findViewById(R.id.snackbarPosition), this.getResources().getText(R.string.errorTitle), Snackbar.LENGTH_LONG);
+            return false;
+        } else if (editTextDescription.getText().toString().equals("")){
+            Snackbar.make(findViewById(R.id.snackbarPosition), this.getResources().getText(R.string.errorDescription), Snackbar.LENGTH_LONG);
+            return false;
+        } else if (editTextDate.getText().toString().equals("")) {
+            Snackbar.make(findViewById(R.id.snackbarPosition), this.getResources().getText(R.string.errorDate), Snackbar.LENGTH_LONG);
+            return false;
+        } else if (editTextTime.getText().toString().equals("")) {
+            Snackbar.make(findViewById(R.id.snackbarPosition), this.getResources().getText(R.string.errorTime), Snackbar.LENGTH_LONG);
+            return false;
+        }else {
+            return true;
+        }
+    }
 }
