@@ -71,15 +71,22 @@ public class TarefaDAO {
         Cursor cursor = db.query(SQLiteHelper.DB, colunas, null, null, null, null, null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            Tarefa tarefa = criaContato(cursor);
+            Tarefa tarefa = criaTarefa(cursor);
             lista.add(tarefa);
             cursor.moveToNext();
         }
         cursor.close();
         return lista;
     }
+    
+    public Tarefa consultar(long id){
+        Tarefa tarefa = new Tarefa();
+        Cursor cursor = db.query(SQLiteHelper.DB, colunas, "_id = ?", new String[]{String.valueOf(id)}, null, null, null);
+        cursor.moveToFirst();
+        return criaTarefa(cursor);
+    }
 
-    private Tarefa criaContato(Cursor c){
+    private Tarefa criaTarefa(Cursor c){
         Tarefa tarefa = new Tarefa();
         Calendar cal = Calendar.getInstance();
         tarefa.setId(c.getLong(0));
