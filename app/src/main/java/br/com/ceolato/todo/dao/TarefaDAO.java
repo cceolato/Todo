@@ -23,7 +23,7 @@ public class TarefaDAO {
     private SQLiteHelper dbHelper;
 
     private final String[] colunas = {SQLiteHelper.TAREFA_ID, SQLiteHelper.TAREFA_TITLE,
-            SQLiteHelper.TAREFA_DESCRIPTION, SQLiteHelper.TAREFA_DATE};
+            SQLiteHelper.TAREFA_DESCRIPTION, SQLiteHelper.TAREFA_DATE, SQLiteHelper.TAREFA_DONE};
 
     public TarefaDAO(Context context){
         dbHelper = new SQLiteHelper(context, SQLiteHelper.DB, 1);
@@ -37,18 +37,21 @@ public class TarefaDAO {
         dbHelper.close();
     }
 
-    public long inserir (Tarefa tarefa){
+    public long inserir (Tarefa tarefa)throws SQLException {
         Calendar cal = Calendar.getInstance();
         cal.setTime(tarefa.getData());
         ContentValues cv = new ContentValues();
         cv.put(SQLiteHelper.TAREFA_TITLE, tarefa.getTitle());
         cv.put(SQLiteHelper.TAREFA_DESCRIPTION, tarefa.getDescription());
         cv.put(SQLiteHelper.TAREFA_DATE, cal.getTimeInMillis());
-
-        return db.insert(SQLiteHelper.DB, null, cv);
+        cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.getDone()));
+        this.open();
+        long inserted = db.insert(SQLiteHelper.DB, null, cv);
+        this.close();
+        return inserted;
     }
 
-    public int alterar(Tarefa tarefa){
+    public int alterar (Tarefa tarefa) throws SQLException{
         long id = tarefa.getId();
         Calendar cal = Calendar.getInstance();
         cal.setTime(tarefa.getData());
@@ -56,18 +59,23 @@ public class TarefaDAO {
         cv.put(SQLiteHelper.TAREFA_TITLE, tarefa.getTitle());
         cv.put(SQLiteHelper.TAREFA_DESCRIPTION, tarefa.getDescription());
         cv.put(SQLiteHelper.TAREFA_DATE, cal.getTimeInMillis());
-
-        return db.update(SQLiteHelper.DB, cv, SQLiteHelper.TAREFA_ID + " = " + id, null);
+        cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.getDone()));
+        this.open();
+        int updated = db.update(SQLiteHelper.DB, cv, SQLiteHelper.TAREFA_ID + " = ?", new String[]{String.valueOf(id)});
+        this.close();
+        return updated;
     }
 
-    public void excluir(Tarefa tarefa){
+    public void excluir(Tarefa tarefa) throws SQLException{
         long id = tarefa.getId();
+        this.open();
         db.delete(SQLiteHelper.DB, SQLiteHelper.TAREFA_ID + " = " + id, null);
+        this.close();
     }
 
-    public List<Tarefa> consultar(){
-        List<Tarefa> lista = new ArrayList<Tarefa>();
-
+    public List<Tarefa> consultar() throws SQLException{
+        List<Tarefa> lista = new ArrayList<>();
+        this.open();
         Cursor cursor = db.query(SQLiteHelper.DB, colunas, null, null, null, null, null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
@@ -76,13 +84,16 @@ public class TarefaDAO {
             cursor.moveToNext();
         }
         cursor.close();
+        this.close();
         return lista;
     }
     
-    public Tarefa consultar(long id){
+    public Tarefa consultar(long id) throws SQLException {
         Tarefa tarefa = new Tarefa();
+        this.open();
         Cursor cursor = db.query(SQLiteHelper.DB, colunas, "_id = ?", new String[]{String.valueOf(id)}, null, null, null);
         cursor.moveToFirst();
+        this.close();
         return criaTarefa(cursor);
     }
 
@@ -95,6 +106,15 @@ public class TarefaDAO {
         cal.setTimeInMillis(c.getLong(3));
         Date d = cal.getTime();
         tarefa.setData(d);
+        tarefa.setDone(this.intToBoolean(c.getInt(4)));
         return tarefa;
+    }
+
+    private int booleanToInt(boolean b){
+        return b ? SQLiteHelper.TRUE : SQLiteHelper.FALSE;
+    }
+
+    private boolean intToBoolean (int i){
+        return i == SQLiteHelper.TRUE;
     }
 }

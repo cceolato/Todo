@@ -11,6 +11,7 @@ public class Tarefa {
     protected String title;
     protected String description;
     protected Date data;
+    protected boolean done;
 
     public Tarefa(){}
 
@@ -36,6 +37,10 @@ public class Tarefa {
         this.title = title;
     }
 
+    public void setDone(boolean done){
+        this.done = done;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -50,5 +55,9 @@ public class Tarefa {
 
     public void setData(Date data) {
         this.data = data;
+    }
+
+    public boolean getDone(){
+        return done;
     }
 }

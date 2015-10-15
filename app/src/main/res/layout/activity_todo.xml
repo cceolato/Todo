@@ -97,6 +97,18 @@
         android:layout_alignRight="@+id/buttonDate"
         android:layout_alignEnd="@+id/buttonDate" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/done"
+        android:id="@+id/checkBoxDone"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/editTextTime"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="false" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -104,19 +116,19 @@
         android:id="@+id/buttonSave"
         android:drawableLeft="@android:drawable/ic_menu_save"
         android:drawableStart="@android:drawable/ic_menu_save"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/buttonTime"
-        android:layout_alignEnd="@+id/buttonTime"
         android:onClick="saveToDo"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/snackbarPosition"
+        android:layout_alignEnd="@+id/snackbarPosition" />
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/snackbarPosition">
+        android:id="@+id/snackbarPosition"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
     </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

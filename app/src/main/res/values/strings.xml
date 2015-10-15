@@ -10,6 +10,7 @@
     <string name="hour">Hora</string>
     <string name="save">Gravar</string>
     <string name="cancel">Cancelar</string>
+    <string name="done">Tarefa concluída</string>
     
     <!--Mensagens de Erro-->
     <string name="errorTitle">Informe o título!</string>
