@@ -85,7 +85,7 @@ public class TodoActivity extends AppCompatActivity {
             editTextDescription.setText(tarefa.getDescription());
             editTextDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(tarefa.getData()));
             editTextTime.setText(new SimpleDateFormat("HH:mm").format(tarefa.getData()));
-            checkBoxDone.setSelected(tarefa.getDone());
+            checkBoxDone.setChecked(tarefa.getDone());
         } else{
             editTextDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime()));
             editTextTime.setText(new SimpleDateFormat("HH:mm").format(cal.getTime()));
