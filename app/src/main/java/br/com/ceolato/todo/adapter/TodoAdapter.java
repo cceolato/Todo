@@ -75,7 +75,7 @@ public class TodoAdapter extends BaseAdapter {
     }
 
     private void pintaFundo(Tarefa tarefa, View view){
-        if(tarefa.getDone()) {
+        if(tarefa.isDone()) {
             view.setBackgroundColor(view.getResources().getColor(R.color.green));
         }else if (tarefa.getData().before(Calendar.getInstance().getTime())){
             view.setBackgroundColor(view.getResources().getColor(R.color.red));

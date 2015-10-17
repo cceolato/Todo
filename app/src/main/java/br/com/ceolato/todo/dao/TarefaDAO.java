@@ -44,7 +44,7 @@ public class TarefaDAO {
         cv.put(SQLiteHelper.TAREFA_TITLE, tarefa.getTitle());
         cv.put(SQLiteHelper.TAREFA_DESCRIPTION, tarefa.getDescription());
         cv.put(SQLiteHelper.TAREFA_DATE, cal.getTimeInMillis());
-        cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.getDone()));
+        cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.isDone()));
         this.open();
         long inserted = db.insert(SQLiteHelper.DB, null, cv);
         this.close();
@@ -59,7 +59,7 @@ public class TarefaDAO {
         cv.put(SQLiteHelper.TAREFA_TITLE, tarefa.getTitle());
         cv.put(SQLiteHelper.TAREFA_DESCRIPTION, tarefa.getDescription());
         cv.put(SQLiteHelper.TAREFA_DATE, cal.getTimeInMillis());
-        cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.getDone()));
+        cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.isDone()));
         this.open();
         int updated = db.update(SQLiteHelper.DB, cv, SQLiteHelper.TAREFA_ID + " = ?", new String[]{String.valueOf(id)});
         this.close();

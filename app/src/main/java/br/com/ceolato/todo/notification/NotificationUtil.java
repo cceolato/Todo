@@ -57,7 +57,7 @@ public class NotificationUtil {
 
     public static void sendBroadcastNotification(Context context, Intent intent, String contentTitle, String contentText, int id){
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setDefaults(Notification.DEFAULT_ALL);
         builder.setSmallIcon(R.mipmap.ic_launcher);

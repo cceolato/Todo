@@ -13,6 +13,7 @@ public class Tarefa implements Serializable {
     protected String description;
     protected Date data;
     protected boolean done;
+    protected boolean dismissed;
 
     public Tarefa(){}
 
@@ -42,6 +43,10 @@ public class Tarefa implements Serializable {
         this.done = done;
     }
 
+    public void setDismissed(boolean dismissed){
+        this.dismissed = dismissed;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -58,23 +63,12 @@ public class Tarefa implements Serializable {
         this.data = data;
     }
 
-    public boolean getDone(){
+    public boolean isDone(){
         return done;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Tarefa tarefa = (Tarefa) o;
-
-        return id == tarefa.id;
-
+    public boolean isDismissed(){
+        return dismissed;
     }
 
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
 }

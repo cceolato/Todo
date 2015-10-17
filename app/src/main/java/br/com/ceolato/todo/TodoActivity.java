@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,11 +17,14 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import br.com.ceolato.todo.alarm.AlarmUtil;
+import br.com.ceolato.todo.broadcast.TodoReceiver;
 import br.com.ceolato.todo.dao.TarefaDAO;
+import br.com.ceolato.todo.db.SQLiteHelper;
 import br.com.ceolato.todo.entity.Tarefa;
 import br.com.ceolato.todo.fragment.DatePickerFragment;
 
@@ -57,7 +61,7 @@ public class TodoActivity extends AppCompatActivity {
             this.carregaTarefa();
             this.setListeners();
         }catch (SQLException s){
-
+            Log.v(SQLiteHelper.TAG, "Erro de SQL");
         }
     }
 
@@ -87,7 +91,7 @@ public class TodoActivity extends AppCompatActivity {
             editTextDescription.setText(tarefa.getDescription());
             editTextDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(tarefa.getData()));
             editTextTime.setText(new SimpleDateFormat("HH:mm").format(tarefa.getData()));
-            checkBoxDone.setChecked(tarefa.getDone());
+            checkBoxDone.setChecked(tarefa.isDone());
         } else{
             editTextDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime()));
             editTextTime.setText(new SimpleDateFormat("HH:mm").format(cal.getTime()));
@@ -127,11 +131,16 @@ public class TodoActivity extends AppCompatActivity {
             tarefa = new Tarefa();
             novo = true;
         } else {
-            cal.setTime(tarefa.getData());
+            try{
+                String data = editTextDate.getText().toString();
+                String time = editTextTime.getText().toString();
+                cal.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(data + " " + time));
+            } catch (ParseException p){
+                Log.e(SQLiteHelper.TAG, "Erro no parser de data");
+            }
         }
         tarefa.setTitle(editTextTitle.getText().toString());
         tarefa.setDescription(editTextDescription.getText().toString());
-        /* TODO: tem que pegar a data do editText e criar*/
         tarefa.setData(cal.getTime());
         tarefa.setDone(checkBoxDone.isChecked());
 
@@ -140,14 +149,16 @@ public class TodoActivity extends AppCompatActivity {
             public void run() {
                 try {
                     TarefaDAO dao = new TarefaDAO(TodoActivity.this);
-                    Intent intent = new Intent("TAREFA");
+                    Intent intent = new Intent(TodoActivity.this, TodoReceiver.class);
                     intent.putExtra("tarefa", tarefa);
                     if (novo) {
                         tarefa.setId(dao.inserir(tarefa));
                     }else{
                         dao.alterar(tarefa);
                     }
-                    AlarmUtil.schedule(TodoActivity.this, intent, tarefa.getData());
+                    if ( !tarefa.isDone() && tarefa.getData().after(Calendar.getInstance().getTime()) ) {
+                        AlarmUtil.schedule(TodoActivity.this, intent, tarefa.getData(), (int) tarefa.getId());
+                    }
                     Snackbar.make(findViewById(R.id.snackbarPosition), getResources().getString(R.string.savedTodo),
                             Snackbar.LENGTH_LONG).show();
                 } catch (SQLException s){

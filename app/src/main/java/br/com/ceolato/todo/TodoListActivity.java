@@ -1,10 +1,14 @@
 package br.com.ceolato.todo;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +19,7 @@ import android.widget.ListView;
 import java.sql.SQLException;
 
 import br.com.ceolato.todo.adapter.TodoAdapter;
+import br.com.ceolato.todo.db.SQLiteHelper;
 
 public class TodoListActivity extends AppCompatActivity {
 
@@ -25,11 +30,9 @@ public class TodoListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        try {
-            mostrarTarefas();
-        }catch (SQLException s){
+        mostrarTarefas();
 
-        }
+        registerReceiver(updateListBroadcastReceiver, new IntentFilter("UPDATE_LIST"));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -42,20 +45,26 @@ public class TodoListActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
-        try {
-            mostrarTarefas();
-        }catch (SQLException s){
-
-        }
-
+        mostrarTarefas();
+        registerReceiver(updateListBroadcastReceiver, new IntentFilter("UPDATE_LIST"));
     }
 
-    private void mostrarTarefas() throws SQLException {
-        ListView listaToDo = (ListView) findViewById(R.id.listViewToDo);
-        listaToDo.setAdapter(new TodoAdapter(this));
-        listaToDo.setOnItemClickListener(new ListaToDOItemClickListener());
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(updateListBroadcastReceiver);
+    }
+
+    private void mostrarTarefas() {
+        try {
+            ListView listaToDo = (ListView) findViewById(R.id.listViewToDo);
+            listaToDo.setAdapter(new TodoAdapter(this));
+            listaToDo.setOnItemClickListener(new ListaToDOItemClickListener());
+        }catch (SQLException s){
+            Log.v(SQLiteHelper.TAG, "Erro de SQL");
+        }
     }
 
     private class ListaToDOItemClickListener implements OnItemClickListener {
@@ -88,4 +97,11 @@ public class TodoListActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private BroadcastReceiver updateListBroadcastReceiver = new BroadcastReceiver()  {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mostrarTarefas();
+        }
+    };
 }

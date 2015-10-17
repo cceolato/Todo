@@ -13,25 +13,25 @@ import java.util.Date;
  */
 public class AlarmUtil {
 
-    public static void schedule(Context context, Intent intent, Date triggerDate){
+    public static void schedule(Context context, Intent intent, Date triggerDate, int id){
         Calendar cal = Calendar.getInstance();
-        PendingIntent pending = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pending = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         cal.setTime(triggerDate);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pending);
     }
 
-    public static void scheduleRepeat(Context context, Intent intent, Date triggerDate, long intervalMillis) {
+    public static void scheduleRepeat(Context context, Intent intent, Date triggerDate, long intervalMillis, int id) {
         Calendar cal = Calendar.getInstance();
-        PendingIntent pending = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pending = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         cal.setTime(triggerDate);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), intervalMillis, pending);
     }
 
-    public static void cancel(Context context, Intent intent){
+    public static void cancel(Context context, Intent intent, int id){
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pending = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pending = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pending);
     }
 

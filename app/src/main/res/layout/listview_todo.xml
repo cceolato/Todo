@@ -7,10 +7,11 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/textViewDate"
+        android:textSize="28sp"
+        android:text="20/10"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:textSize="28sp"/>
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -21,7 +22,8 @@
         android:layout_toRightOf="@+id/textViewDate"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:padding="5sp" />
+        android:padding="5sp"
+        android:text="Título" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,7 +36,8 @@
         android:layout_alignRight="@+id/textViewDate"
         android:layout_alignEnd="@+id/textViewDate"
         android:textSize="24sp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:text="18:55" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,6 +47,7 @@
         android:layout_toRightOf="@+id/textViewDate"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/textViewTime" />
+        android:layout_alignBottom="@+id/textViewTime"
+        android:text="Descrição blá blá" />
 
 </RelativeLayout>
