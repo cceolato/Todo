@@ -20,6 +20,12 @@
         </activity>
         <activity android:name=".TodoActivity" >
         </activity>
+
+        <receiver
+            android:name=".broadcast.TodoReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
     </application>
 
 </manifest>

@@ -1,11 +1,12 @@
 package br.com.ceolato.todo.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by 1541714 on 13/10/2015.
  */
-public class Tarefa {
+public class Tarefa implements Serializable {
 
     protected long id;
     protected String title;
@@ -59,5 +60,21 @@ public class Tarefa {
 
     public boolean getDone(){
         return done;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tarefa tarefa = (Tarefa) o;
+
+        return id == tarefa.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 }
