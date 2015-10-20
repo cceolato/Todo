@@ -1,10 +1,12 @@
 package br.com.ceolato.todo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.sql.SQLException;
@@ -68,6 +70,36 @@ public class TodoAdapter extends BaseAdapter {
         textViewDescription.setText(tarefa.getDescription());
         textViewDate.setText(dateFormat.format(tarefa.getData()));
         textViewTime.setText(timeFormat.format(tarefa.getData()));
+
+        ImageView imageViewImportant = (ImageView) view.findViewById(R.id.imageViewImportant);
+        imageViewImportant.setTag(tarefa.getId());
+
+        if (tarefa.isImportant()){
+            imageViewImportant.setBackground(view.getResources().getDrawable(android.R.drawable.star_on));
+        }else{
+            imageViewImportant.setBackground(view.getResources().getDrawable(android.R.drawable.star_off));
+        }
+
+        imageViewImportant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    TarefaDAO dao = new TarefaDAO(v.getContext());
+                    long id = (long) v.getTag();
+                    Tarefa tarefa = dao.consultar(id);
+                    tarefa.setImportant(!tarefa.isImportant());
+                    if (tarefa.isImportant()){
+                        v.setBackground(v.getResources().getDrawable(android.R.drawable.star_on));
+                    }else{
+                        v.setBackground(v.getResources().getDrawable(android.R.drawable.star_off));
+                    }
+                    dao.alterar(tarefa);
+                    v.getContext().sendBroadcast(new Intent("UPDATE_LIST"));
+                }catch (SQLException s){
+
+                }
+            }
+        });
 
         pintaFundo(tarefa, view);
 

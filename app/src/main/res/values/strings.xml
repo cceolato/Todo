@@ -11,7 +11,12 @@
     <string name="save">Gravar</string>
     <string name="cancel">Cancelar</string>
     <string name="done">Tarefa concluída</string>
-    
+    <string name="important">Tarefa importante</string>
+
+    <!--Mensagens -->
+    <string name="tarefas_perdidas">ToDo: alertas perdidos</string>
+    <string name="mensagem_tarefas_perdidas">Você perdeu alertas de novas tarefas</string>
+
     <!--Mensagens de Erro-->
     <string name="errorTitle">Informe o título!</string>
     <string name="errorDescription">Informe a descrição!</string>

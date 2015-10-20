@@ -6,48 +6,68 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/textViewDate"
-        android:textSize="28sp"
-        android:text="20/10"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Título da tarefa"
         android:id="@+id/textViewTitle"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/textViewDate"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:padding="5sp"
-        android:text="Título" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingStart="5dp"
+        android:paddingTop="5dp"
+        android:layout_toLeftOf="@+id/textViewDate"
+        android:layout_toStartOf="@+id/textViewDate"
+        android:maxLines="1" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/textViewTime"
-        android:layout_below="@+id/textViewDate"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/textViewDate"
-        android:layout_alignEnd="@+id/textViewDate"
-        android:textSize="24sp"
+        android:text="20/12"
+        android:id="@+id/textViewDate"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/textViewDescription"
+        android:layout_toLeftOf="@+id/textViewTime"
+        android:layout_toStartOf="@+id/textViewTime"
+        android:paddingTop="5dp"
         android:gravity="center"
-        android:text="18:55" />
+        android:paddingRight="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewDescription"
-        android:layout_below="@+id/textViewTitle"
-        android:layout_toRightOf="@+id/textViewDate"
+        android:text="14:05"
+        android:id="@+id/textViewTime"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/textViewTime"
-        android:text="Descrição blá blá" />
+        android:gravity="center"
+        android:layout_alignBottom="@+id/textViewTitle"
+        android:paddingEnd="5dp"
+        android:paddingTop="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Descrição da tarefa bla blas blalb la adjkj kasjd dja d asd asd dasddd as"
+        android:id="@+id/textViewDescription"
+        android:layout_below="@+id/textViewTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/imageViewImportant"
+        android:layout_toStartOf="@+id/imageViewImportant"
+        android:layout_alignBottom="@+id/imageViewImportant"
+        android:paddingStart="10dp"
+        android:maxLines="1" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageViewImportant"
+        android:layout_below="@+id/textViewTitle"
+        android:layout_alignRight="@+id/textViewTime"
+        android:layout_alignEnd="@+id/textViewTime"
+        android:background="@android:drawable/star_off"
+        android:paddingEnd="5dp"
+        android:contentDescription="Não Importante" />
 
 </RelativeLayout>

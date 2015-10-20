@@ -16,6 +16,12 @@ public class TodoReceiver extends BroadcastReceiver {
         Tarefa tarefa = (Tarefa) intent.getExtras().get("tarefa");
         Intent it = new Intent(context, UserNotified.class);
         it.putExtra("tarefa", tarefa);
-        NotificationUtil.sendBroadcastNotification(context, it, tarefa.getTitle(), tarefa.getDescription(), (int) tarefa.getId() );
+        if(tarefa.isImportant()){
+            NotificationUtil.sendBroadcastHeadsUpNotification(context, it, tarefa.getTitle(), tarefa.getDescription(), (int) tarefa.getId() );
+        }else{
+            NotificationUtil.sendBroadcastNotification(context, it, tarefa.getTitle(), tarefa.getDescription(), (int) tarefa.getId() );
+        }
     }
+
+
 }

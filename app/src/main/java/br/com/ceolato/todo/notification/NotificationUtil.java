@@ -11,7 +11,10 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
 
+import java.util.List;
+
 import br.com.ceolato.todo.R;
+import br.com.ceolato.todo.entity.Tarefa;
 
 /**
  * Created by CarlosAlberto on 16/10/2015.
@@ -70,6 +73,23 @@ public class NotificationUtil {
         manager.notify(id, n);
     }
 
+    public static void sendBroadcastHeadsUpNotification(Context context, Intent intent, String contentTitle, String contentText, int id){
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder.setDefaults(Notification.DEFAULT_ALL);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContentTitle(contentTitle);
+        builder.setContentText(contentText);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        builder.setColor(Color.BLUE);
+        builder.setFullScreenIntent(pendingIntent, false);
+        Notification n = builder.build();
+        manager.notify(id, n);
+    }
+
     public static void cancel (Context context, int id){
         NotificationManagerCompat nm = NotificationManagerCompat.from(context);
         nm.cancel(id);
@@ -80,4 +100,27 @@ public class NotificationUtil {
         nm.cancelAll();
     }
 
+    public static void createBigNotification(Context context, Intent intent, String contentTitle,
+                                             String contentText, List<String> lista, int id) {
+        PendingIntent pendingIntent = getPendingIntent(context, intent, id);
+        int size = lista.size();
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+        inboxStyle.setBigContentTitle(contentTitle);
+        for(String s : lista){
+            inboxStyle.addLine(s);
+        }
+        inboxStyle.setSummaryText(contentText);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder.setDefaults(Notification.DEFAULT_ALL);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContentTitle(contentTitle);
+        builder.setContentText(contentText);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        builder.setNumber(size);
+        builder.setStyle(inboxStyle);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(context);
+        nm.notify(id, builder.build());
+    }
 }

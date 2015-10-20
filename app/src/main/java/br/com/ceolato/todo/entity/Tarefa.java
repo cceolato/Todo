@@ -14,6 +14,7 @@ public class Tarefa implements Serializable {
     protected Date data;
     protected boolean done;
     protected boolean dismissed;
+    protected boolean important;
 
     public Tarefa(){}
 
@@ -47,6 +48,10 @@ public class Tarefa implements Serializable {
         this.dismissed = dismissed;
     }
 
+    public void setImportant(boolean important){
+        this.important = important;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -70,5 +75,10 @@ public class Tarefa implements Serializable {
     public boolean isDismissed(){
         return dismissed;
     }
+
+    public boolean isImportant(){
+        return important;
+    }
+
 
 }

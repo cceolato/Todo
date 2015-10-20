@@ -36,6 +36,7 @@ public class TodoActivity extends AppCompatActivity {
     private EditText editTextTime;
 
     private CheckBox checkBoxDone;
+    private CheckBox checkBoxImportant;
 
     private Button buttonDate;
     private Button buttonTime;
@@ -71,6 +72,7 @@ public class TodoActivity extends AppCompatActivity {
         editTextDate = (EditText) findViewById(R.id.editTextDate);
         editTextTime = (EditText) findViewById(R.id.editTextTime);
         checkBoxDone = (CheckBox) findViewById(R.id.checkBoxDone);
+        checkBoxImportant = (CheckBox) findViewById(R.id.checkBoxImportant);
         buttonDate = (Button) findViewById(R.id.buttonDate);
         buttonTime = (Button) findViewById(R.id.buttonTime);
         buttonSave = (Button) findViewById(R.id.buttonSave);
@@ -92,6 +94,7 @@ public class TodoActivity extends AppCompatActivity {
             editTextDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(tarefa.getData()));
             editTextTime.setText(new SimpleDateFormat("HH:mm").format(tarefa.getData()));
             checkBoxDone.setChecked(tarefa.isDone());
+            checkBoxImportant.setChecked(tarefa.isImportant());
         } else{
             editTextDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime()));
             editTextTime.setText(new SimpleDateFormat("HH:mm").format(cal.getTime()));
@@ -143,6 +146,7 @@ public class TodoActivity extends AppCompatActivity {
         tarefa.setDescription(editTextDescription.getText().toString());
         tarefa.setData(cal.getTime());
         tarefa.setDone(checkBoxDone.isChecked());
+        tarefa.setImportant(checkBoxImportant.isChecked());
 
         new Thread(new Runnable() {
             @Override
