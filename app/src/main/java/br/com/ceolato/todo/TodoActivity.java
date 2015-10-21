@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,7 +25,6 @@ import br.com.ceolato.todo.broadcast.TodoReceiver;
 import br.com.ceolato.todo.dao.TarefaDAO;
 import br.com.ceolato.todo.db.SQLiteHelper;
 import br.com.ceolato.todo.entity.Tarefa;
-import br.com.ceolato.todo.fragment.DatePickerFragment;
 
 public class TodoActivity extends AppCompatActivity {
 
@@ -57,13 +55,10 @@ public class TodoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
         cal = Calendar.getInstance();
-        try{
             this.inicializa();
             this.carregaTarefa();
             this.setListeners();
-        }catch (SQLException s){
             Log.v(SQLiteHelper.TAG, "Erro de SQL");
-        }
     }
 
     private void inicializa(){
@@ -84,7 +79,7 @@ public class TodoActivity extends AppCompatActivity {
         minute = cal.get(Calendar.MINUTE);
     }
 
-    private void carregaTarefa() throws SQLException {
+    private void carregaTarefa() {
         long id = this.getIntent().getLongExtra("tarefa", -1);
         TarefaDAO dao = new TarefaDAO(this);
         if (id > -1) {
@@ -162,7 +157,7 @@ public class TodoActivity extends AppCompatActivity {
                     if ( !tarefa.isDone() && tarefa.getData().after(Calendar.getInstance().getTime()) ) {
                         AlarmUtil.schedule(TodoActivity.this, intent, tarefa.getData(), (int) tarefa.getId());
                     }
-                    Snackbar.make(findViewById(R.id.snackbarPosition), getResources().getString(R.string.savedTodo),
+                    Snackbar.make(getCurrentFocus(), getResources().getString(R.string.savedTodo),
                             Snackbar.LENGTH_LONG).show();
             }
         }).start();
@@ -203,19 +198,19 @@ public class TodoActivity extends AppCompatActivity {
 
     private boolean validaCampos(){
         if (editTextTitle.getText().toString().equals("")){
-            Snackbar.make(findViewById(R.id.snackbarPosition), this.getResources().getText(R.string.errorTitle),
+            Snackbar.make(findViewById(R.id.contentTodo), this.getResources().getText(R.string.errorTitle),
                     Snackbar.LENGTH_LONG).show();
             return false;
         } else if (editTextDescription.getText().toString().equals("")){
-            Snackbar.make(findViewById(R.id.snackbarPosition), this.getResources().getText(R.string.errorDescription),
+            Snackbar.make(findViewById(R.id.contentTodo), this.getResources().getText(R.string.errorDescription),
                     Snackbar.LENGTH_LONG).show();
             return false;
         } else if (editTextDate.getText().toString().equals("")) {
-            Snackbar.make(findViewById(R.id.snackbarPosition), this.getResources().getText(R.string.errorDate),
+            Snackbar.make(findViewById(R.id.contentTodo), this.getResources().getText(R.string.errorDate),
                     Snackbar.LENGTH_LONG).show();
             return false;
         } else if (editTextTime.getText().toString().equals("")) {
-            Snackbar.make(findViewById(R.id.snackbarPosition), this.getResources().getText(R.string.errorTime),
+            Snackbar.make(findViewById(R.id.contentTodo), this.getResources().getText(R.string.errorTime),
                     Snackbar.LENGTH_LONG).show();
             return false;
         }else {
