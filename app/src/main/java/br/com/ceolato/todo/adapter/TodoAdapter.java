@@ -83,7 +83,6 @@ public class TodoAdapter extends BaseAdapter {
         imageViewImportant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
                     TarefaDAO dao = new TarefaDAO(v.getContext());
                     long id = (long) v.getTag();
                     Tarefa tarefa = dao.consultar(id);
@@ -95,9 +94,6 @@ public class TodoAdapter extends BaseAdapter {
                     }
                     dao.alterar(tarefa);
                     v.getContext().sendBroadcast(new Intent("UPDATE_LIST"));
-                }catch (SQLException s){
-
-                }
             }
         });
 

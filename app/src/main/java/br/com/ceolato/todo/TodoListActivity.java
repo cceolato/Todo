@@ -4,24 +4,37 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 
-import java.sql.SQLException;
+import java.util.List;
 
-import br.com.ceolato.todo.adapter.TodoAdapter;
-import br.com.ceolato.todo.db.SQLiteHelper;
+import br.com.ceolato.todo.adapter.TodoRecyclerViewAdapter;
+import br.com.ceolato.todo.alarm.AlarmUtil;
+import br.com.ceolato.todo.broadcast.TodoReceiver;
+import br.com.ceolato.todo.dao.TarefaDAO;
+import br.com.ceolato.todo.entity.Tarefa;
+import br.com.ceolato.todo.listeners.RecyclerViewOnClickListener;
 
-public class TodoListActivity extends AppCompatActivity {
+public class TodoListActivity extends AppCompatActivity implements RecyclerViewOnClickListener {
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private List<Tarefa> listaTarefas;
+    private TarefaDAO dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +42,47 @@ public class TodoListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_todo_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerViewToDo);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addOnItemTouchListener(new RecyclerViewOnTouchListener(this, mRecyclerView, this));
+
+        final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                final TarefaDAO dao = new TarefaDAO(TodoListActivity.this);
+                final Tarefa tarefa = listaTarefas.get(viewHolder.getAdapterPosition());
+                //Remove swiped item from list and notify the RecyclerView
+                if (swipeDir == ItemTouchHelper.RIGHT){
+                    tarefa.setDone(true);
+                    dao.alterar(tarefa);
+                    TodoListActivity.this.sendBroadcast(new Intent("UPDATE_LIST"));
+                }else{
+                    dao.excluir(tarefa);
+                    Snackbar.make(mRecyclerView, getResources().getString(R.string.deletedTodo), Snackbar.LENGTH_LONG)
+                            .setAction(getResources().getString(R.string.undo), new View.OnClickListener(){
+                                @Override
+                                public void onClick(View v){
+                                    dao.inserir(tarefa);
+                                    mostrarTarefas();
+                                }
+                            }).setActionTextColor(Color.YELLOW).show();
+                    TodoListActivity.this.sendBroadcast(new Intent("UPDATE_LIST"));
+                }
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+
+        dao = new TarefaDAO(this);
 
         mostrarTarefas();
 
@@ -58,22 +112,33 @@ public class TodoListActivity extends AppCompatActivity {
     }
 
     private void mostrarTarefas() {
-        try {
-            ListView listaToDo = (ListView) findViewById(R.id.listViewToDo);
-            listaToDo.setAdapter(new TodoAdapter(this));
-            listaToDo.setOnItemClickListener(new ListaToDOItemClickListener());
-        }catch (SQLException s){
-            Log.v(SQLiteHelper.TAG, "Erro de SQL");
-        }
+        listaTarefas = dao.consultar();
+        TodoRecyclerViewAdapter todoRecyclerViewAdapter = new TodoRecyclerViewAdapter(this, listaTarefas);
+        todoRecyclerViewAdapter.setRecyclerViewOnClickListener(this);
+        mRecyclerView.setAdapter(todoRecyclerViewAdapter);
     }
 
-    private class ListaToDOItemClickListener implements OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent i = new Intent(getApplicationContext(), TodoActivity.class);
-            i.putExtra("tarefa", id);
-            startActivity(i);
-        }
+    @Override
+    public void onClickListener(View view, int position) {
+        Intent i = new Intent(getApplicationContext(), TodoActivity.class);
+        i.putExtra("tarefa", listaTarefas.get(position).getId());
+        startActivity(i);
+    }
+
+    @Override
+    public void onLongPressClickListener(View view, int position) {
+        final Tarefa tarefa = listaTarefas.get(position);
+        dao.excluir(tarefa);
+        AlarmUtil.cancel(this, new Intent(this, TodoReceiver.class), (int) tarefa.getId());
+        Snackbar.make(view, view.getResources().getString(R.string.deletedTodo), Snackbar.LENGTH_LONG)
+                .setAction(view.getResources().getString(R.string.undo), new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        dao.inserir(tarefa);
+                        mostrarTarefas();
+                    }
+                }).setActionTextColor(Color.YELLOW).show();
+        mostrarTarefas();
     }
     
     @Override
@@ -94,7 +159,6 @@ public class TodoListActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -104,4 +168,46 @@ public class TodoListActivity extends AppCompatActivity {
             mostrarTarefas();
         }
     };
+
+    private static class RecyclerViewOnTouchListener implements RecyclerView.OnItemTouchListener{
+        private Context context;
+        private RecyclerViewOnClickListener rc;
+        private GestureDetector gestureDetector;
+
+        public RecyclerViewOnTouchListener(Context c, final RecyclerView rv, RecyclerViewOnClickListener rco){
+            context = c;
+            rc = rco;
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
+                @Override
+                public void onLongPress(MotionEvent e){
+                    super.onLongPress(e);
+                    View cv = rv.findChildViewUnder(e.getX(), e.getY());
+                    if (cv != null && rc != null){
+                        rc.onLongPressClickListener(cv, rv.getChildAdapterPosition(cv));
+                    }
+                }
+
+                @Override
+                public boolean onSingleTapUp(MotionEvent e){
+                    return false;
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            gestureDetector.onTouchEvent(e);
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+
+    }
+
 }

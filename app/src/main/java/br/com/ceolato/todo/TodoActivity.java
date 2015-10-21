@@ -151,7 +151,6 @@ public class TodoActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
                     TarefaDAO dao = new TarefaDAO(TodoActivity.this);
                     Intent intent = new Intent(TodoActivity.this, TodoReceiver.class);
                     intent.putExtra("tarefa", tarefa);
@@ -165,8 +164,6 @@ public class TodoActivity extends AppCompatActivity {
                     }
                     Snackbar.make(findViewById(R.id.snackbarPosition), getResources().getString(R.string.savedTodo),
                             Snackbar.LENGTH_LONG).show();
-                } catch (SQLException s){
-                }
             }
         }).start();
 

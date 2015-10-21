@@ -25,15 +25,11 @@ public class BootCompletedReceiver extends BroadcastReceiver {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try{
                     TarefaDAO dao = new TarefaDAO(context);
                     List<String> lista = dao.consultarMensagensPerdidas();
                     NotificationUtil.createBigNotification(context, intent, context.getResources()
                             .getString(R.string.tarefas_perdidas), context.getResources()
                             .getString(R.string.mensagem_tarefas_perdidas), lista, 0);
-                }catch (SQLException s){
-                    Log.e(SQLiteHelper.TAG, "Erro de SQL");
-                }
             }
         }).start();
     }

@@ -12,6 +12,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:paddingStart="5dp"
+        android:paddingLeft="5dp"
         android:paddingTop="5dp"
         android:layout_toLeftOf="@+id/textViewDate"
         android:layout_toStartOf="@+id/textViewDate"
@@ -42,6 +43,7 @@
         android:gravity="center"
         android:layout_alignBottom="@+id/textViewTitle"
         android:paddingEnd="5dp"
+        android:paddingRight="5dp"
         android:paddingTop="5dp" />
 
     <TextView
@@ -57,6 +59,7 @@
         android:layout_toStartOf="@+id/imageViewImportant"
         android:layout_alignBottom="@+id/imageViewImportant"
         android:paddingStart="10dp"
+        android:paddingLeft="10dp"
         android:maxLines="1" />
 
     <ImageView
@@ -68,6 +71,7 @@
         android:layout_alignEnd="@+id/textViewTime"
         android:background="@android:drawable/star_off"
         android:paddingEnd="5dp"
+        android:paddingRight="5dp"
         android:contentDescription="Não Importante" />
 
 </RelativeLayout>

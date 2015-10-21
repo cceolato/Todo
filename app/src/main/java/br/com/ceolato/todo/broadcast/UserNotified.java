@@ -25,13 +25,9 @@ public class UserNotified extends BroadcastReceiver {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
                     TarefaDAO dao = new TarefaDAO(context);
                     dao.excluir(tarefa);
                     context.sendBroadcast(new Intent("UPDATE_LIST"));
-                }catch (SQLException s){
-                    Log.e(SQLiteHelper.TAG, "Erro de SQL");
-                }
             }
         }).start();
     }

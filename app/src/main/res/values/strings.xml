@@ -16,6 +16,7 @@
     <!--Mensagens -->
     <string name="tarefas_perdidas">ToDo: alertas perdidos</string>
     <string name="mensagem_tarefas_perdidas">Você perdeu alertas de novas tarefas</string>
+    <string name="undo">Desfazer</string>
 
     <!--Mensagens de Erro-->
     <string name="errorTitle">Informe o título!</string>
@@ -24,5 +25,10 @@
     <string name="errorTime">Informe a hora!</string>
 
     <!-- Mensagens de Sucesso -->
-    <string name="savedTodo">Tarefa salva com sucesso!</string>    
+    <string name="savedTodo">Tarefa salva com sucesso!</string>
+    <string name="deletedTodo">Tarefa apagada com sucesso!</string>
+
+    <!-- HINTS -->
+    <string name="titleHint">Informe um título</string>
+    <string name="descriptionHint">Informe a descrição da tarefa</string>
 </resources>

@@ -38,82 +38,108 @@ public class TarefaDAO {
         dbHelper.close();
     }
 
-    public long inserir (Tarefa tarefa)throws SQLException {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(tarefa.getData());
-        ContentValues cv = new ContentValues();
-        cv.put(SQLiteHelper.TAREFA_TITLE, tarefa.getTitle());
-        cv.put(SQLiteHelper.TAREFA_DESCRIPTION, tarefa.getDescription());
-        cv.put(SQLiteHelper.TAREFA_DATE, cal.getTimeInMillis());
-        cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.isDone()));
-        cv.put(SQLiteHelper.TAREFA_IMPORTANT, this.booleanToInt(tarefa.isImportant()));
-        this.open();
-        long inserted = db.insert(SQLiteHelper.DB, null, cv);
-        this.close();
+    public long inserir (Tarefa tarefa) {
+        long inserted = 0;
+        try {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(tarefa.getData());
+            ContentValues cv = new ContentValues();
+            cv.put(SQLiteHelper.TAREFA_TITLE, tarefa.getTitle());
+            cv.put(SQLiteHelper.TAREFA_DESCRIPTION, tarefa.getDescription());
+            cv.put(SQLiteHelper.TAREFA_DATE, cal.getTimeInMillis());
+            cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.isDone()));
+            cv.put(SQLiteHelper.TAREFA_IMPORTANT, this.booleanToInt(tarefa.isImportant()));
+            this.open();
+            inserted = db.insert(SQLiteHelper.DB, null, cv);
+            this.close();
+        }catch (SQLException s){
+        }
         return inserted;
     }
 
-    public int alterar (Tarefa tarefa) throws SQLException{
-        long id = tarefa.getId();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(tarefa.getData());
-        ContentValues cv = new ContentValues();
-        cv.put(SQLiteHelper.TAREFA_TITLE, tarefa.getTitle());
-        cv.put(SQLiteHelper.TAREFA_DESCRIPTION, tarefa.getDescription());
-        cv.put(SQLiteHelper.TAREFA_DATE, cal.getTimeInMillis());
-        cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.isDone()));
-        cv.put(SQLiteHelper.TAREFA_IMPORTANT, this.booleanToInt(tarefa.isImportant()));
-        this.open();
-        int updated = db.update(SQLiteHelper.DB, cv, SQLiteHelper.TAREFA_ID + " = ?", new String[]{String.valueOf(id)});
-        this.close();
+    public int alterar (Tarefa tarefa) {
+        int updated = 0;
+        try {
+            long id = tarefa.getId();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(tarefa.getData());
+            ContentValues cv = new ContentValues();
+            cv.put(SQLiteHelper.TAREFA_TITLE, tarefa.getTitle());
+            cv.put(SQLiteHelper.TAREFA_DESCRIPTION, tarefa.getDescription());
+            cv.put(SQLiteHelper.TAREFA_DATE, cal.getTimeInMillis());
+            cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.isDone()));
+            cv.put(SQLiteHelper.TAREFA_IMPORTANT, this.booleanToInt(tarefa.isImportant()));
+            this.open();
+            updated = db.update(SQLiteHelper.DB, cv, SQLiteHelper.TAREFA_ID + " = ?", new String[]{String.valueOf(id)});
+            this.close();
+        }catch (SQLException s){
+
+        }
         return updated;
     }
 
-    public void excluir(Tarefa tarefa) throws SQLException{
-        long id = tarefa.getId();
-        this.open();
-        db.delete(SQLiteHelper.DB, SQLiteHelper.TAREFA_ID + " = " + id, null);
-        this.close();
+    public void excluir(Tarefa tarefa) {
+        try {
+            long id = tarefa.getId();
+            this.open();
+            db.delete(SQLiteHelper.DB, SQLiteHelper.TAREFA_ID + " = " + id, null);
+            this.close();
+        }catch (SQLException s){
+
+        }
     }
 
-    public List<Tarefa> consultar() throws SQLException{
+    public List<Tarefa> consultar() {
         List<Tarefa> lista = new ArrayList<>();
-        this.open();
-        Cursor cursor = db.query(SQLiteHelper.DB, colunas, null, null, null, null, null);
-        cursor.moveToFirst();
-        while(!cursor.isAfterLast()){
-            Tarefa tarefa = criaTarefa(cursor);
-            lista.add(tarefa);
-            cursor.moveToNext();
+        try {
+            this.open();
+            Cursor cursor = db.query(SQLiteHelper.DB, colunas, null, null, null, null, null);
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                Tarefa tarefa = criaTarefa(cursor);
+                lista.add(tarefa);
+                cursor.moveToNext();
+            }
+            cursor.close();
+            this.close();
+        }catch (SQLException s){
+
         }
-        cursor.close();
-        this.close();
         return lista;
     }
     
-    public Tarefa consultar(long id) throws SQLException {
+    public Tarefa consultar(long id)  {
         Tarefa tarefa = new Tarefa();
-        this.open();
-        Cursor cursor = db.query(SQLiteHelper.DB, colunas, "_id = ?", new String[]{String.valueOf(id)}, null, null, null);
-        cursor.moveToFirst();
-        this.close();
-        return criaTarefa(cursor);
+        try {
+            this.open();
+            Cursor cursor = db.query(SQLiteHelper.DB, colunas, "_id = ?", new String[]{String.valueOf(id)}, null, null, null);
+            cursor.moveToFirst();
+            this.close();
+            tarefa = criaTarefa(cursor);
+        }catch (SQLException s){
+
+        }
+        return tarefa;
     }
 
-    public List<String> consultarMensagensPerdidas() throws SQLException {
+    public List<String> consultarMensagensPerdidas() {
         List<String> lista = new ArrayList<>();
-        this.open();
-        String where = SQLiteHelper.TAREFA_DONE + " = ? AND " + SQLiteHelper.TAREFA_DATE + " <= ?";
-        String[] wherArgs = new String[]{String.valueOf(SQLiteHelper.FALSE), String.valueOf(Calendar.getInstance().getTimeInMillis())};
-        Cursor cursor = db.query(SQLiteHelper.DB, colunas, where, wherArgs, null, null, null);
-        cursor.moveToFirst();
-        while(!cursor.isAfterLast()){
-            Tarefa tarefa = criaTarefa(cursor);
-            lista.add(tarefa.getTitle());
-            cursor.moveToNext();
+        try {
+            this.open();
+            String where = SQLiteHelper.TAREFA_DONE + " = ? AND " + SQLiteHelper.TAREFA_DATE + " <= ?";
+            String[] wherArgs = new String[]{String.valueOf(SQLiteHelper.FALSE), String.valueOf(Calendar.getInstance().getTimeInMillis())};
+            Cursor cursor = db.query(SQLiteHelper.DB, colunas, where, wherArgs, null, null, null);
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                Tarefa tarefa = criaTarefa(cursor);
+                lista.add(tarefa.getTitle());
+                cursor.moveToNext();
+            }
+            cursor.close();
+            this.close();
+        }catch (SQLException s){
+
         }
-        cursor.close();
-        this.close();
         return lista;
     }
 
