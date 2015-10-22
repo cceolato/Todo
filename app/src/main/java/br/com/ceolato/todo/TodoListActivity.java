@@ -39,6 +39,7 @@ public class TodoListActivity extends AppCompatActivity implements RecyclerViewO
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Tarefa> listaTarefas;
     private TarefaDAO dao;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +47,32 @@ public class TodoListActivity extends AppCompatActivity implements RecyclerViewO
         setContentView(R.layout.activity_todo_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerViewToDo);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addOnItemTouchListener(new RecyclerViewOnTouchListener(this, mRecyclerView, this));
 
-        Spinner spinner = new Spinner(getSupportActionBar().getThemedContext());
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.filtro_tarefas,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner = new Spinner(getSupportActionBar().getThemedContext());
+        TodoSpinnerAdapter adapter = new TodoSpinnerAdapter(this);
+        ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new SpinnerMenu());
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mostrarTarefas();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         toolbar.addView(spinner, 1);
 
         final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -72,16 +87,18 @@ public class TodoListActivity extends AppCompatActivity implements RecyclerViewO
                 final TarefaDAO dao = new TarefaDAO(TodoListActivity.this);
                 final Tarefa tarefa = listaTarefas.get(viewHolder.getAdapterPosition());
                 String mensagem = "";
-                //Remove swiped item from list and notify the RecyclerView
                 if (swipeDir == ItemTouchHelper.RIGHT){
-                    if(tarefa.isDone()){
+                    if (tarefa.isDone() && tarefa.isArchived()){
+                        mensagem = "Nenhuma ação tomada!";
+                    }else if(tarefa.isDone()){
                         tarefa.setArchived(true);
+                        dao.alterar(tarefa);
                         mensagem = getResources().getString(R.string.tarefa_archived);
                     }else {
                         tarefa.setDone(true);
+                        dao.alterar(tarefa);
                         mensagem = getResources().getString(R.string.tarefa_done);
                     }
-                    dao.alterar(tarefa);
                     Snackbar.make(mRecyclerView, mensagem, Snackbar.LENGTH_LONG).show();
                     TodoListActivity.this.sendBroadcast(new Intent("UPDATE_LIST"));
                 }else{
@@ -103,8 +120,6 @@ public class TodoListActivity extends AppCompatActivity implements RecyclerViewO
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         dao = new TarefaDAO(this);
-
-        mostrarTarefas();
 
         registerReceiver(updateListBroadcastReceiver, new IntentFilter("UPDATE_LIST"));
 
@@ -132,9 +147,46 @@ public class TodoListActivity extends AppCompatActivity implements RecyclerViewO
     }
 
     private void mostrarTarefas() {
-        String where = SQLiteHelper.TAREFA_ARCHIVED + " = ?";
-        String[] whereArgs = new String[]{String.valueOf(SQLiteHelper.FALSE)};
-        String orderBy = SQLiteHelper.TAREFA_DATE + " DESC";
+        final int ALL = 0;
+        final int ARCHIVED = 1;
+        final int DONE = 2;
+        final int IMOPORTANT = 3;
+        final int UNDONE = 4;
+        int position = spinner.getSelectedItemPosition();
+
+        String where = null;
+        String[] whereArgs = null;
+
+        switch (position) {
+            case ALL:
+                Log.v(SQLiteHelper.TAG, "ALL: " + position);
+                where = null;
+                whereArgs = null;
+                break;
+            case UNDONE:
+                Log.v(SQLiteHelper.TAG, "UNDONE : " + position);
+                where = SQLiteHelper.TAREFA_DONE + " = ?";
+                whereArgs = new String[]{String.valueOf(SQLiteHelper.FALSE)};
+                break;
+            case DONE:
+                Log.v(SQLiteHelper.TAG, "DONE: " + position);
+                where = SQLiteHelper.TAREFA_DONE + " = ?";
+                whereArgs = new String[]{String.valueOf(SQLiteHelper.TRUE)};
+                break;
+            case ARCHIVED:
+                Log.v(SQLiteHelper.TAG, "ARCHIVED: " + position);
+                where = SQLiteHelper.TAREFA_ARCHIVED + " = ?";
+                whereArgs = new String[]{String.valueOf(SQLiteHelper.TRUE)};
+                break;
+            case IMOPORTANT:
+                Log.v(SQLiteHelper.TAG, "IMPORTANT: " + position);
+                where = SQLiteHelper.TAREFA_IMPORTANT + " = ?";
+                whereArgs = new String[]{String.valueOf(SQLiteHelper.TRUE)};
+            default:
+                break;
+        }
+
+        String orderBy = SQLiteHelper.TAREFA_DATE + " ASC";
         listaTarefas = dao.consultar(where, whereArgs, orderBy);
         TodoRecyclerViewAdapter todoRecyclerViewAdapter = new TodoRecyclerViewAdapter(this, listaTarefas);
         todoRecyclerViewAdapter.setRecyclerViewOnClickListener(this);
