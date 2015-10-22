@@ -56,6 +56,9 @@ public class TodoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         cal = Calendar.getInstance();
         this.inicializa();
         this.carregaTarefa();
@@ -148,8 +151,7 @@ public class TodoActivity extends AppCompatActivity {
                     if ( !tarefa.isDone() && tarefa.getData().after(Calendar.getInstance().getTime()) ) {
                         AlarmUtil.schedule(TodoActivity.this, intent, tarefa.getData(), (int) tarefa.getId());
                     }
-                    Snackbar.make(getCurrentFocus(), getResources().getString(R.string.savedTodo),
-                            Snackbar.LENGTH_LONG).show();
+                    Toast.makeText(TodoActivity.this, getResources().getString(R.string.savedTodo), Toast.LENGTH_LONG).show();
             }
         }).start();
 
@@ -247,26 +249,53 @@ public class TodoActivity extends AppCompatActivity {
     }
 
     private void excluiTarefa(){
-        final TarefaDAO dao = new TarefaDAO(this);
-        dao.excluir(tarefa);
-        Snackbar.make(getCurrentFocus(), getResources().getString(R.string.deletedTodo),
-                Snackbar.LENGTH_LONG).
-                setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dao.inserir(tarefa);
-                        TodoActivity.this.sendBroadcast(new Intent("UPDATE_LIST"));
-                    }
-                }).setActionTextColor(Color.YELLOW).show();
-        finish();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(getResources().getString(R.string.confirm_delete));
+        dialog.setMessage(getResources().getString(R.string.confirm_delete_message, tarefa.getTitle(), tarefa.getDescription()));
+        dialog.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final TarefaDAO dao = new TarefaDAO(TodoActivity.this);
+                dao.excluir(tarefa);
+                Toast.makeText(TodoActivity.this, getResources().getString(R.string.deletedTodo), Toast.LENGTH_LONG).show();
+                TodoActivity.this.sendBroadcast(new Intent("UPDATE_LIST"));
+                finish();
+            }
+        });
 
+        dialog.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog confirma = dialog.create();
+        confirma.show();
     }
 
     private void arquivarTarefa(){
-        final TarefaDAO dao = new TarefaDAO(this);
-        tarefa.setArchived(true);
-        dao.alterar(tarefa);
-        Snackbar.make(getCurrentFocus(), getResources().getString(R.string.archived), Snackbar.LENGTH_LONG).show();
-        finish();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(getResources().getString(R.string.confirm_archive));
+        dialog.setMessage(getResources().getString(R.string.confirm_archive_message, tarefa.getTitle(), tarefa.getDescription()));
+        dialog.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final TarefaDAO dao = new TarefaDAO(TodoActivity.this);
+                tarefa.setArchived(true);
+                dao.alterar(tarefa);
+                TodoActivity.this.sendBroadcast(new Intent("UPDATE_LIST"));
+                Toast.makeText(TodoActivity.this, getResources().getString(R.string.archived), Toast.LENGTH_LONG).show();
+                finish();
+            }
+        });
+
+        dialog.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog confirma = dialog.create();
+        confirma.show();
     }
 }
