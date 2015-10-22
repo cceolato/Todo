@@ -4,10 +4,13 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,7 +41,6 @@ public class TodoActivity extends AppCompatActivity {
 
     private Button buttonDate;
     private Button buttonTime;
-    private Button buttonSave;
 
     private int year, month, day, hour, minute;
     private Long id;
@@ -55,10 +57,9 @@ public class TodoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
         cal = Calendar.getInstance();
-            this.inicializa();
-            this.carregaTarefa();
-            this.setListeners();
-            Log.v(SQLiteHelper.TAG, "Erro de SQL");
+        this.inicializa();
+        this.carregaTarefa();
+        this.setListeners();
     }
 
     private void inicializa(){
@@ -70,7 +71,6 @@ public class TodoActivity extends AppCompatActivity {
         checkBoxImportant = (CheckBox) findViewById(R.id.checkBoxImportant);
         buttonDate = (Button) findViewById(R.id.buttonDate);
         buttonTime = (Button) findViewById(R.id.buttonTime);
-        buttonSave = (Button) findViewById(R.id.buttonSave);
 
         year = cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH);
@@ -111,15 +111,6 @@ public class TodoActivity extends AppCompatActivity {
             }
         });
 
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validaCampos()){
-                    saveToDo(v);
-                    finish();
-                }
-            }
-        });
     }
 
     public void saveToDo(View view){
@@ -217,5 +208,65 @@ public class TodoActivity extends AppCompatActivity {
             return true;
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_todo, menu);
+        if (tarefa == null){
+            menu.removeItem(R.id.action_delete);
+            menu.removeItem(R.id.action_archive);
+        }
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                return true;
+            case R.id.action_about:
+                return true;
+            case R.id.action_archive:
+                arquivarTarefa();
+                return true;
+            case R.id.action_delete:
+                excluiTarefa();
+                return true;
+            case R.id.action_save:
+                if (validaCampos()){
+                    saveToDo(item.getActionView());
+                    finish();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void excluiTarefa(){
+        final TarefaDAO dao = new TarefaDAO(this);
+        dao.excluir(tarefa);
+        Snackbar.make(getCurrentFocus(), getResources().getString(R.string.deletedTodo),
+                Snackbar.LENGTH_LONG).
+                setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dao.inserir(tarefa);
+                        TodoActivity.this.sendBroadcast(new Intent("UPDATE_LIST"));
+                    }
+                }).setActionTextColor(Color.YELLOW).show();
+        finish();
+
+    }
+
+    private void arquivarTarefa(){
+        final TarefaDAO dao = new TarefaDAO(this);
+        tarefa.setArchived(true);
+        dao.alterar(tarefa);
+        Snackbar.make(getCurrentFocus(), getResources().getString(R.string.archived), Snackbar.LENGTH_LONG).show();
+        finish();
+    }
 }

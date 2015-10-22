@@ -24,7 +24,7 @@ public class TarefaDAO {
 
     private final String[] colunas = {SQLiteHelper.TAREFA_ID, SQLiteHelper.TAREFA_TITLE,
             SQLiteHelper.TAREFA_DESCRIPTION, SQLiteHelper.TAREFA_DATE, SQLiteHelper.TAREFA_DONE,
-            SQLiteHelper.TAREFA_IMPORTANT};
+            SQLiteHelper.TAREFA_IMPORTANT, SQLiteHelper.TAREFA_ARCHIVED};
 
     public TarefaDAO(Context context){
         dbHelper = new SQLiteHelper(context, SQLiteHelper.DB);
@@ -49,6 +49,7 @@ public class TarefaDAO {
             cv.put(SQLiteHelper.TAREFA_DATE, cal.getTimeInMillis());
             cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.isDone()));
             cv.put(SQLiteHelper.TAREFA_IMPORTANT, this.booleanToInt(tarefa.isImportant()));
+            cv.put(SQLiteHelper.TAREFA_ARCHIVED, this.booleanToInt(tarefa.isArchived()));
             this.open();
             inserted = db.insert(SQLiteHelper.DB, null, cv);
             this.close();
@@ -69,6 +70,7 @@ public class TarefaDAO {
             cv.put(SQLiteHelper.TAREFA_DATE, cal.getTimeInMillis());
             cv.put(SQLiteHelper.TAREFA_DONE, this.booleanToInt(tarefa.isDone()));
             cv.put(SQLiteHelper.TAREFA_IMPORTANT, this.booleanToInt(tarefa.isImportant()));
+            cv.put(SQLiteHelper.TAREFA_ARCHIVED, this.booleanToInt(tarefa.isArchived()));
             this.open();
             updated = db.update(SQLiteHelper.DB, cv, SQLiteHelper.TAREFA_ID + " = ?", new String[]{String.valueOf(id)});
             this.close();
@@ -107,7 +109,26 @@ public class TarefaDAO {
         }
         return lista;
     }
-    
+
+    public List<Tarefa> consultar(String where, String[]whereArgs, String orderBy) {
+        List<Tarefa> lista = new ArrayList<>();
+        try {
+            this.open();
+            Cursor cursor = db.query(SQLiteHelper.DB, colunas, where, whereArgs, null, null, orderBy);
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                Tarefa tarefa = criaTarefa(cursor);
+                lista.add(tarefa);
+                cursor.moveToNext();
+            }
+            cursor.close();
+            this.close();
+        }catch (SQLException s){
+
+        }
+        return lista;
+    }
+
     public Tarefa consultar(long id)  {
         Tarefa tarefa = new Tarefa();
         try {
@@ -154,6 +175,7 @@ public class TarefaDAO {
         tarefa.setData(d);
         tarefa.setDone(this.intToBoolean(c.getInt(4)));
         tarefa.setImportant(this.intToBoolean(c.getInt(5)));
+        tarefa.setArchived(this.intToBoolean(c.getInt(6)));
         return tarefa;
     }
 

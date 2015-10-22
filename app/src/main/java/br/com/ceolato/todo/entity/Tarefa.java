@@ -13,7 +13,7 @@ public class Tarefa implements Serializable {
     protected String description;
     protected Date data;
     protected boolean done;
-    protected boolean dismissed;
+    protected boolean archived;
     protected boolean important;
 
     public Tarefa(){}
@@ -44,8 +44,8 @@ public class Tarefa implements Serializable {
         this.done = done;
     }
 
-    public void setDismissed(boolean dismissed){
-        this.dismissed = dismissed;
+    public void setArchived(boolean archived){
+        this.archived = archived;
     }
 
     public void setImportant(boolean important){
@@ -72,8 +72,8 @@ public class Tarefa implements Serializable {
         return done;
     }
 
-    public boolean isDismissed(){
-        return dismissed;
+    public boolean isArchived(){
+        return archived;
     }
 
     public boolean isImportant(){

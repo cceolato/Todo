@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">Todo</string>
-    <string name="action_settings">Settings</string>
 
+    <string name="action_settings">Configurações</string>
+    <string name="action_about">Sobre</string>
+    <string name="action_save">Salvar</string>
+    <string name="action_delete">Apagar</string>
+    <string name="action_archive">Arquivar</string>
 
     <!-- New To-Do  -->
     <string name="title">Título</string>
@@ -12,11 +16,14 @@
     <string name="cancel">Cancelar</string>
     <string name="done">Tarefa concluída</string>
     <string name="important">Tarefa importante</string>
+    <string name="archived">Tarefa arquivada!</string>
 
     <!--Mensagens -->
     <string name="tarefas_perdidas">ToDo: alertas perdidos</string>
     <string name="mensagem_tarefas_perdidas">Você perdeu alertas de novas tarefas</string>
     <string name="undo">Desfazer</string>
+    <string name="tarefa_done">Tarefa marcada como concluída!</string>
+    <string name="tarefa_archived">Tarefa arquivada!</string>
 
     <!--Mensagens de Erro-->
     <string name="errorTitle">Informe o título!</string>
@@ -31,4 +38,11 @@
     <!-- HINTS -->
     <string name="titleHint">Informe um título</string>
     <string name="descriptionHint">Informe a descrição da tarefa</string>
+
+    <!-- Menu -->
+    <string name="show_all">Todas</string>
+    <string name="show_done">Concluídas</string>
+    <string name="show_archived">Arquivadas</string>
+    <string name="show_undone">Não concluídas</string>
+
 </resources>

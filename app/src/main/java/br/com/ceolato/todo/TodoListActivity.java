@@ -25,6 +25,7 @@ import br.com.ceolato.todo.adapter.TodoRecyclerViewAdapter;
 import br.com.ceolato.todo.alarm.AlarmUtil;
 import br.com.ceolato.todo.broadcast.TodoReceiver;
 import br.com.ceolato.todo.dao.TarefaDAO;
+import br.com.ceolato.todo.db.SQLiteHelper;
 import br.com.ceolato.todo.entity.Tarefa;
 import br.com.ceolato.todo.listeners.RecyclerViewOnClickListener;
 
@@ -59,10 +60,18 @@ public class TodoListActivity extends AppCompatActivity implements RecyclerViewO
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 final TarefaDAO dao = new TarefaDAO(TodoListActivity.this);
                 final Tarefa tarefa = listaTarefas.get(viewHolder.getAdapterPosition());
+                String mensagem = "";
                 //Remove swiped item from list and notify the RecyclerView
                 if (swipeDir == ItemTouchHelper.RIGHT){
-                    tarefa.setDone(true);
+                    if(tarefa.isDone()){
+                        tarefa.setArchived(true);
+                        mensagem = getResources().getString(R.string.tarefa_archived);
+                    }else {
+                        tarefa.setDone(true);
+                        mensagem = getResources().getString(R.string.tarefa_done);
+                    }
                     dao.alterar(tarefa);
+                    Snackbar.make(mRecyclerView, mensagem, Snackbar.LENGTH_LONG).show();
                     TodoListActivity.this.sendBroadcast(new Intent("UPDATE_LIST"));
                 }else{
                     dao.excluir(tarefa);
@@ -112,7 +121,10 @@ public class TodoListActivity extends AppCompatActivity implements RecyclerViewO
     }
 
     private void mostrarTarefas() {
-        listaTarefas = dao.consultar();
+        String where = SQLiteHelper.TAREFA_ARCHIVED + " = ?";
+        String[] whereArgs = new String[]{String.valueOf(SQLiteHelper.FALSE)};
+        String orderBy = SQLiteHelper.TAREFA_DATE + " DESC";
+        listaTarefas = dao.consultar(where, whereArgs, orderBy);
         TodoRecyclerViewAdapter todoRecyclerViewAdapter = new TodoRecyclerViewAdapter(this, listaTarefas);
         todoRecyclerViewAdapter.setRecyclerViewOnClickListener(this);
         mRecyclerView.setAdapter(todoRecyclerViewAdapter);
@@ -144,7 +156,7 @@ public class TodoListActivity extends AppCompatActivity implements RecyclerViewO
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_todo, menu);
+        getMenuInflater().inflate(R.menu.menu_todo_list, menu);
         return true;
     }
 
