@@ -18,9 +18,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import java.util.List;
 
+import br.com.ceolato.todo.activity.SpinnerMenu;
 import br.com.ceolato.todo.adapter.TodoRecyclerViewAdapter;
 import br.com.ceolato.todo.alarm.AlarmUtil;
 import br.com.ceolato.todo.broadcast.TodoReceiver;
@@ -48,6 +51,14 @@ public class TodoListActivity extends AppCompatActivity implements RecyclerViewO
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addOnItemTouchListener(new RecyclerViewOnTouchListener(this, mRecyclerView, this));
+
+        Spinner spinner = new Spinner(getSupportActionBar().getThemedContext());
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.filtro_tarefas,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new SpinnerMenu());
+        toolbar.addView(spinner, 1);
 
         final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 

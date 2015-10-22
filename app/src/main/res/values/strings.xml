@@ -45,4 +45,11 @@
     <string name="show_archived">Arquivadas</string>
     <string name="show_undone">Não concluídas</string>
 
+    <string-array name="filtro_tarefas">
+        <item>Todas</item>
+        <item>Não concluídas</item>
+        <item>Concluídas</item>
+        <item>Arquivadas</item>
+    </string-array>
+
 </resources>
