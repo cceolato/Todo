@@ -24,6 +24,10 @@
     <string name="undo">Desfazer</string>
     <string name="tarefa_done">Tarefa marcada como concluída!</string>
     <string name="tarefa_archived">Tarefa arquivada!</string>
+    <string name="confirm_delete">Confirma Exclusão</string>
+    <string name="confirm_archive">Confirma Arquivamento</string>
+    <string name="confirm_delete_message">Confirma a exclusão da tarefa: \n %1$s \n %2$s ?</string>
+    <string name="confirm_archive_message">Confirma o arquivamento da tarefa: \n %1$s \n %2$s ?</string>
 
     <!--Mensagens de Erro-->
     <string name="errorTitle">Informe o título!</string>
@@ -47,9 +51,10 @@
 
     <string-array name="filtro_tarefas">
         <item>Todas</item>
-        <item>Não concluídas</item>
-        <item>Concluídas</item>
         <item>Arquivadas</item>
+        <item>Concluídas</item>
+        <item>Importantes</item>
+        <item>Não concluídas</item>
     </string-array>
 
 </resources>
