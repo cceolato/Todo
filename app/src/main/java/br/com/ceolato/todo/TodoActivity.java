@@ -265,6 +265,7 @@ public class TodoActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 final TarefaDAO dao = new TarefaDAO(TodoActivity.this);
                 dao.excluir(tarefa);
+                AlarmUtil.cancel(TodoActivity.this, new Intent(TodoActivity.this, TodoReceiver.class), (int) tarefa.getId());
                 Toast.makeText(TodoActivity.this, getResources().getString(R.string.deletedTodo), Toast.LENGTH_LONG).show();
                 TodoActivity.this.sendBroadcast(new Intent("UPDATE_LIST"));
                 finish();
