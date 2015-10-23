@@ -1,8 +1,10 @@
 package br.com.ceolato.todo;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
@@ -17,6 +19,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -140,18 +143,23 @@ public class TodoActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                    TarefaDAO dao = new TarefaDAO(TodoActivity.this);
-                    Intent intent = new Intent(TodoActivity.this, TodoReceiver.class);
-                    intent.putExtra("tarefa", tarefa);
-                    if (novo) {
-                        tarefa.setId(dao.inserir(tarefa));
-                    }else{
-                        dao.alterar(tarefa);
+                TarefaDAO dao = new TarefaDAO(TodoActivity.this);
+                Intent intent = new Intent(TodoActivity.this, TodoReceiver.class);
+                intent.putExtra("tarefa", tarefa);
+                if (novo) {
+                    tarefa.setId(dao.inserir(tarefa));
+                }else{
+                    dao.alterar(tarefa);
+                }
+                if ( !tarefa.isDone() && tarefa.getData().after(Calendar.getInstance().getTime()) ) {
+                    AlarmUtil.schedule(TodoActivity.this, intent, tarefa.getData(), (int) tarefa.getId());
+                }
+                TodoActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(TodoActivity.this, getResources().getString(R.string.savedTodo), Toast.LENGTH_LONG).show();
                     }
-                    if ( !tarefa.isDone() && tarefa.getData().after(Calendar.getInstance().getTime()) ) {
-                        AlarmUtil.schedule(TodoActivity.this, intent, tarefa.getData(), (int) tarefa.getId());
-                    }
-                    Toast.makeText(TodoActivity.this, getResources().getString(R.string.savedTodo), Toast.LENGTH_LONG).show();
+                });
             }
         }).start();
 

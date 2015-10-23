@@ -5,7 +5,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Título da tarefa"
         android:id="@+id/textViewTitle"
         android:layout_alignParentTop="true"
@@ -16,12 +16,12 @@
         android:paddingTop="5dp"
         android:layout_toLeftOf="@+id/textViewDate"
         android:layout_toStartOf="@+id/textViewDate"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="20/12"
         android:id="@+id/textViewDate"
         android:layout_alignParentTop="true"
@@ -49,7 +49,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Descrição da tarefa bla blas blalb la adjkj kasjd dja d asd asd dasddd as"
         android:id="@+id/textViewDescription"
         android:layout_below="@+id/textViewTitle"
@@ -57,21 +56,29 @@
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/imageViewImportant"
         android:layout_toStartOf="@+id/imageViewImportant"
-        android:layout_alignBottom="@+id/imageViewImportant"
         android:paddingStart="10dp"
         android:paddingLeft="10dp"
-        android:maxLines="1" />
+        android:maxLines="2"
+        android:minLines="2" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageViewImportant"
-        android:layout_below="@+id/textViewTitle"
-        android:layout_alignRight="@+id/textViewTime"
-        android:layout_alignEnd="@+id/textViewTime"
         android:background="@android:drawable/star_off"
         android:paddingEnd="5dp"
         android:paddingRight="5dp"
-        android:contentDescription="Não Importante" />
+        android:contentDescription="Não Importante"
+        android:layout_above="@+id/view"
+        android:layout_alignRight="@+id/textViewTime"
+        android:layout_alignEnd="@+id/textViewTime" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/textViewDescription"
+        android:id="@+id/view" />
 
 </RelativeLayout>

@@ -41,12 +41,11 @@ public class TodoRecyclerViewAdapter extends RecyclerView.Adapter<TodoRecyclerVi
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = inflater.inflate(R.layout.listview_todo, viewGroup, false);
-        MyViewHolder myViewHolder = new MyViewHolder(view);
-        return myViewHolder;
+        return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         Tarefa tarefa = listaTarefas.get(position);
         holder.textViewTitle.setText(tarefa.getTitle());
         holder.textViewDescription.setText(tarefa.getDescription());
@@ -117,11 +116,14 @@ public class TodoRecyclerViewAdapter extends RecyclerView.Adapter<TodoRecyclerVi
 
     private void pintaFundo(Tarefa tarefa, View view){
         if(tarefa.isDone()) {
-            view.setBackgroundColor(view.getResources().getColor(R.color.green));
+//            view.setBackgroundColor(view.getResources().getColor(R.color.green));
+            ((TextView) view.findViewById(R.id.textViewTitle)).setTextColor(view.getResources().getColor(R.color.green));
         }else if (tarefa.getData().before(Calendar.getInstance().getTime())){
-            view.setBackgroundColor(view.getResources().getColor(R.color.red));
+//            view.setBackgroundColor(view.getResources().getColor(R.color.red));
+            ((TextView) view.findViewById(R.id.textViewTitle)).setTextColor(view.getResources().getColor(R.color.red));
         }else{
-            view.setBackgroundColor(view.getResources().getColor(R.color.white));
+//            view.setBackgroundColor(view.getResources().getColor(R.color.white));
+            ((TextView) view.findViewById(R.id.textViewTitle)).setTextColor(view.getResources().getColor(R.color.black));
         }
     }
 }

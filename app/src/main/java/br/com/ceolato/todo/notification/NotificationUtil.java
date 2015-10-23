@@ -14,6 +14,7 @@ import android.support.v7.app.NotificationCompat;
 import java.util.List;
 
 import br.com.ceolato.todo.R;
+import br.com.ceolato.todo.TodoListActivity;
 import br.com.ceolato.todo.entity.Tarefa;
 
 /**
@@ -25,8 +26,7 @@ public class NotificationUtil {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(intent.getComponent());
         stackBuilder.addNextIntent(intent);
-        PendingIntent p = stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
-        return  p;
+        return stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     public static void create (Context context, Intent intent, String contentTitle, String contentText, int id){
@@ -102,7 +102,9 @@ public class NotificationUtil {
 
     public static void createBigNotification(Context context, Intent intent, String contentTitle,
                                              String contentText, List<String> lista, int id) {
-        PendingIntent pendingIntent = getPendingIntent(context, intent, id);
+//        PendingIntent pendingIntent = getPendingIntent(context, intent, id);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                new Intent(context, TodoListActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         int size = lista.size();
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         inboxStyle.setBigContentTitle(contentTitle);

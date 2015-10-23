@@ -1,5 +1,6 @@
 package br.com.ceolato.todo;
 
+import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,18 +14,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import java.util.List;
 
-import br.com.ceolato.todo.activity.SpinnerMenu;
 import br.com.ceolato.todo.adapter.TodoRecyclerViewAdapter;
+import br.com.ceolato.todo.adapter.TodoSpinnerAdapter;
 import br.com.ceolato.todo.alarm.AlarmUtil;
 import br.com.ceolato.todo.broadcast.TodoReceiver;
 import br.com.ceolato.todo.dao.TarefaDAO;
