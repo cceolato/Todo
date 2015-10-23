@@ -107,6 +107,7 @@ public class TodoListActivity extends AppCompatActivity implements RecyclerViewO
                     TodoListActivity.this.sendBroadcast(new Intent("UPDATE_LIST"));
                 }else{
                     dao.excluir(tarefa);
+                    AlarmUtil.cancel(TodoListActivity.this, new Intent(TodoListActivity.this, TodoReceiver.class), (int) tarefa.getId());
                     Snackbar.make(mRecyclerView, getResources().getString(R.string.deletedTodo), Snackbar.LENGTH_LONG)
                             .setAction(getResources().getString(R.string.undo), new View.OnClickListener(){
                                 @Override
