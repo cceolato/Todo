@@ -154,6 +154,9 @@ public class TodoActivity extends AppCompatActivity {
                 if ( !tarefa.isDone() && tarefa.getData().after(Calendar.getInstance().getTime()) ) {
                     AlarmUtil.schedule(TodoActivity.this, intent, tarefa.getData(), (int) tarefa.getId());
                 }
+                if(tarefa.isDone()){
+                    AlarmUtil.cancel(TodoActivity.this, new Intent(TodoActivity.this, TodoReceiver.class), (int) tarefa.getId());
+                }
                 TodoActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
