@@ -26,7 +26,8 @@ public class UserNotified extends BroadcastReceiver {
             @Override
             public void run() {
                     TarefaDAO dao = new TarefaDAO(context);
-                    dao.excluir(tarefa);
+                    tarefa.setArchived(true);
+                    dao.alterar(tarefa);
                     context.sendBroadcast(new Intent("UPDATE_LIST"));
             }
         }).start();
