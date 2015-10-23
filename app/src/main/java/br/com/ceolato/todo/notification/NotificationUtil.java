@@ -67,6 +67,7 @@ public class NotificationUtil {
         builder.setContentTitle(contentTitle);
         builder.setContentText(contentText);
         builder.setContentIntent(pendingIntent);
+        builder.setVibrate(new long[]{200});
         builder.setAutoCancel(true);
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         Notification n = builder.build();
@@ -82,6 +83,7 @@ public class NotificationUtil {
         builder.setContentTitle(contentTitle);
         builder.setContentText(contentText);
         builder.setContentIntent(pendingIntent);
+        builder.setVibrate(new long[]{200});
         builder.setAutoCancel(true);
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         builder.setColor(Color.BLUE);
